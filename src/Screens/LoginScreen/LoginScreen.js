@@ -16,6 +16,7 @@ import * as Yup from 'yup';
 import colors from '../../Styles/colors';
 import axios from 'axios';
 import apiUrl from '../../Constants/apiUrl';
+import { axiosPostApi } from '../../Services/ApiService';
 
 const LoginScreen = () => {
   const [isVisible, setVisible] = useState(true);
@@ -28,23 +29,46 @@ const LoginScreen = () => {
       .required('Please enter a password'),
   });
 
+  // const loginUser = async (values) =>{
+  //   try {
+  //     console.log('try---');
+  //     const response = await axios.post(`${apiUrl.baseUrl}${apiUrl.login}`, {
+        // email:values.email,
+        // password:values.password
+  //     })
+  //     const data = await response.data;
+  //     console.log('output---',data);
+      // if(!data?.success){
+      //   Alert.alert('Opps!',data?.message)
+      // }else{
+      //   Alert.alert(`Welcome ${data?.data?.name} . You are logged in as ${data?.data?.role_name}`)
+      // }
+  //   } catch (error) {
+  //       console.log(`Error message: ${error}`);
+  
+  //   }
+  // }
+
   const loginUser = async (values) =>{
+    const data = {
+      email:values.email,
+      password:values.password
+    }
     try {
-      console.log('try---');
-      const response = await axios.post(`${apiUrl.baseUrl}${apiUrl.login}`, {
-        email:values.email,
-        password:values.password
-      })
-      const data = await response.data;
-      console.log('output---',data);
+     await axiosPostApi(apiUrl.login,data)
+     .then((res)=>{
+      const data = res?.data;
       if(!data?.success){
         Alert.alert('Opps!',data?.message)
       }else{
         Alert.alert(`Welcome ${data?.data?.name} . You are logged in as ${data?.data?.role_name}`)
       }
+     })
+     .catch((error)=>{
+      console.log('error---',error);
+     })
     } catch (error) {
         console.log(`Error message: ${error}`);
-  
     }
   }
 
