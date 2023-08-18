@@ -10,6 +10,7 @@ export default {
 
     home : require('../Assets/images/home.png'),
     booking : require('../Assets/images/booking.png'),
+    task : require('../Assets/images/task.png'),
     profile : require('../Assets/images/profile.png'),
     notification : require('../Assets/images/notification.png'),
     location : require('../Assets/images/location.png'),
