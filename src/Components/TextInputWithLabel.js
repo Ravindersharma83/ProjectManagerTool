@@ -6,7 +6,10 @@ import colors from '../Styles/colors';
 const TextInputWithLabel = ({
         label,
         placeholder,
-        onChangeText=()=>{},
+        onChangeText,
+        onBlur,
+        setFieldTouched,
+        value,
         inputStyle = {},
         rightIcon,
         onPressRight,
@@ -19,6 +22,9 @@ const TextInputWithLabel = ({
         <TextInput 
             style={styles.inlineStyle} 
             placeholder={placeholder}
+            onChangeText={onChangeText}
+            onBlur={onBlur}
+            value={value}
             {...props}
         />
         {!!rightIcon ? 
