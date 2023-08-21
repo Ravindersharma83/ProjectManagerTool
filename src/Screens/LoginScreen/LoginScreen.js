@@ -5,7 +5,7 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {moderateScale, moderateVerticalScale} from 'react-native-size-matters';
 import ButtonComp from '../../Components/ButtonComp';
 import imagePath from '../../Constants/imagePath';
@@ -14,12 +14,15 @@ import TextInputWithLabel from '../../Components/TextInputWithLabel';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import colors from '../../Styles/colors';
-import axios from 'axios';
 import apiUrl from '../../Constants/apiUrl';
 import { axiosPostApi } from '../../Services/ApiService';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useLogin } from '../../Context/AuthContext';
+import Loading from '../../Components/Loading';
 
 const LoginScreen = () => {
   const [isVisible, setVisible] = useState(true);
+  const {setIsLoggedIn,setProfile,isLoggedIn} = useLogin();
 
   const LoginSchema = Yup.object().shape({
     email: Yup.string()
@@ -29,26 +32,6 @@ const LoginScreen = () => {
       .required('Please enter a password'),
   });
 
-  // const loginUser = async (values) =>{
-  //   try {
-  //     console.log('try---');
-  //     const response = await axios.post(`${apiUrl.baseUrl}${apiUrl.login}`, {
-        // email:values.email,
-        // password:values.password
-  //     })
-  //     const data = await response.data;
-  //     console.log('output---',data);
-      // if(!data?.success){
-      //   Alert.alert('Opps!',data?.message)
-      // }else{
-      //   Alert.alert(`Welcome ${data?.data?.name} . You are logged in as ${data?.data?.role_name}`)
-      // }
-  //   } catch (error) {
-  //       console.log(`Error message: ${error}`);
-  
-  //   }
-  // }
-
   const loginUser = async (values) =>{
     const data = {
       email:values.email,
@@ -56,11 +39,24 @@ const LoginScreen = () => {
     }
     try {
      await axiosPostApi(apiUrl.login,data)
-     .then((res)=>{
+     .then(async(res)=>{
       const data = res?.data;
       if(!data?.success){
         Alert.alert('Opps!',data?.message)
       }else{
+        const jsonValue = JSON.stringify(data?.data);
+        console.log('jsonValue',jsonValue);
+        AsyncStorage.setItem('user', jsonValue);
+        AsyncStorage.setItem('loggedIn', JSON.stringify(true))
+        await AsyncStorage.getItem('loggedIn',(err, value) => {
+          if (err) {
+              Alert.alert("No data found");
+          } else {
+              setIsLoggedIn(JSON.parse(value)) 
+          }
+        })
+        // setIsLoggedIn(true);
+        setProfile(data?.data);
         Alert.alert(`Welcome ${data?.data?.name} . You are logged in as ${data?.data?.role_name}`)
       }
      })
@@ -73,7 +69,8 @@ const LoginScreen = () => {
   }
 
   return (
-    <ScrollView style={styles.container}>
+    <>
+    <ScrollView>
         <ImageBackground
           source={imagePath.login}
           style={styles.imgStyle}>
@@ -88,7 +85,7 @@ const LoginScreen = () => {
             validationSchema={LoginSchema}
             onSubmit={(values) => {
               // Handle form submission here
-              console.log('Form values:', values);
+              // console.log('Form values:', values);
               loginUser(values);
             }}
           >
@@ -128,6 +125,7 @@ const LoginScreen = () => {
       </Formik>
       </View>
     </ScrollView>
+    </>
   );
 };
 
