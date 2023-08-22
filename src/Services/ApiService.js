@@ -11,6 +11,7 @@ export const axiosGetApi = async (route)=>{
 }
 
 export const axiosPostApi = async (route,data)=>{
+    console.log('api url--',apiUrl.baseUrl+route);
     const res = await axios({
         method:'post',
         url:apiUrl.baseUrl+route,

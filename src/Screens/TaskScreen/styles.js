@@ -3,11 +3,24 @@ import { scale, moderateScale, moderateVerticalScale } from 'react-native-size-m
 import colors from '../../Styles/colors';
 
 const styles = StyleSheet.create({
-  container: {
+container: {
     flex: 1,
-    justifyContent:'center',
-    alignItems:'center'
-    },
+  },
+  flatStyle:{
+    backgroundColor: colors.white,
+    // shadowColor: '#000',
+    // shadowOffset: { width: 0, height: 2 },
+    // shadowOpacity: 0.2,
+    elevation:4,
+    padding:moderateScale(16),
+    borderRadius:moderateScale(4),
+    margin:moderateScale(5)
+  },
+  flexView: {
+    flexDirection: 'row', 
+    alignItems: 'center',
+    justifyContent:'space-between'
+}
 })
 
 export default styles;

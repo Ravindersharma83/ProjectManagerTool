@@ -14,5 +14,7 @@ export default {
     profile : require('../Assets/images/profile.png'),
     notification : require('../Assets/images/notification.png'),
     location : require('../Assets/images/location.png'),
+    filter : require('../Assets/images/filter.png'),
+    close : require('../Assets/images/close.png'),
 
 }
