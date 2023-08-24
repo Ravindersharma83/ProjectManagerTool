@@ -2,14 +2,14 @@ import { ActivityIndicator, StyleSheet, Text, View,useWindowDimensions } from 'r
 import React from 'react'
 import colors from '../Styles/colors';
 
-const Loading = ({visible=false}) => {
+const Loading = ({visible=false,title}) => {
   const {width, height} = useWindowDimensions();
   return (
     visible && (
         <View style={[styles.container, {height, width}]}>
           <View style={styles.loader}>
             <ActivityIndicator size="large" color={colors.themeColor} />
-            <Text style={{marginLeft: 10, fontSize: 16}}>Welcome to Baltech ...</Text>
+            <Text style={{marginLeft: 10, fontSize: 16}}>{title} ...</Text>
           </View>
         </View>
       )
@@ -21,7 +21,7 @@ export default Loading
 const styles = StyleSheet.create({
   loader: {
     height: 70,
-    backgroundColor: colors.white,
+    // backgroundColor: colors.white,
     marginHorizontal: 50,
     borderRadius: 5,
     flexDirection: 'row',
@@ -34,6 +34,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.5)',
     justifyContent: 'center',
     flex:1,
-    backgroundColor: colors.themeColor,
+    backgroundColor: colors.white,
   },
 });

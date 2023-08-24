@@ -32,7 +32,7 @@ export default function Routes(){
     }, [setIsLoggedIn]); 
 
     if (isLoading) {
-        return <Loading visible={true}/>; // Display loading screen while fetching login status
+        return <Loading visible={true} title={'Welcome To Baltech'}/>; // Display loading screen while fetching login status
     }
 
     return(
