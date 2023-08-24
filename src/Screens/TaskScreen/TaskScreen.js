@@ -1,4 +1,4 @@
-import {View,Text,FlatList,Alert,TouchableOpacity,Image,Modal,Button} from 'react-native';
+import {View,Text,FlatList,RefreshControl,Alert,TouchableOpacity,Image,Modal,Button} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import styles from './styles';
 import {useLogin} from '../../Context/AuthContext';
@@ -127,13 +127,21 @@ console.log('tasks-----',tasks);
             </TouchableOpacity>
           </View>
         {tasks.length > 0 ?
+        <View style={{flex:1}}>
+          <RefreshControl
+            refreshing={loading}
+            onRefresh={()=>{
+              getTasks();
+            }}
+          >
           <FlatList
           data={tasks}
           renderItem={({item}) => <TaskListing item={item} />}
           />
+          </RefreshControl>
+          </View>
           : <NotFound/>}
         </View>
-
       <Modal
         animationType="slide"
         // transparent={true}
