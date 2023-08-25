@@ -84,11 +84,14 @@ const TaskListing = ({item}) => {
               color: colors.black,
               fontWeight: 'bold',
               textTransform:'uppercase',
-              marginTop: moderateVerticalScale(8)
+              marginTop: moderateVerticalScale(8),
+              padding:moderateScale(6),
+              borderRadius:moderateScale(5),
+              backgroundColor:colors.themeColor
           }}>{item?.pro_name}
         </Text>
       </View>
-        <View style={{backgroundColor:'aqua',padding:moderateScale(6),borderRadius:moderateScale(5)}}>
+        <View style={{backgroundColor:'lightgreen',padding:moderateScale(6),borderRadius:moderateScale(5)}}>
           <Text style={{
               fontSize: scale(12),
                 color: 'darkblue',
@@ -99,16 +102,16 @@ const TaskListing = ({item}) => {
     </View>
 
 
-    <View style={{ ...styles.flexView, marginVertical: moderateVerticalScale(8), justifyContent:'flex-start' }}>
+    <View style={{ ...styles.flexView, marginVertical: moderateVerticalScale(8), justifyContent:'flex-start',backgroundColor:'#f2f2f2',padding:10 }}>
       <Text style={{
           fontSize: moderateScale(14),
-          color: colors.themeColor,
+          color: colors.black,
           textTransform: 'uppercase'
 
       }}>#{item?.task_number}</Text>
       <Text style={{
           fontSize: scale(16),
-          color: colors.themeColor,
+          color: colors.black,
           fontWeight: 'bold',
           marginLeft:moderateScale(5),
           textTransform:'capitalize',
@@ -116,10 +119,10 @@ const TaskListing = ({item}) => {
   </View>
 
   <View>
-    <Text style={{color:colors.black,textTransform:'capitalize'}}>{item?.detail.substr(0,150).replace( /(<([^>]+)>)/ig, '').replace(/&nbsp;/g, ' ')}{item?.detail.length > 150 ? '...' : ''}</Text>
+    <Text style={{color:'gray',textTransform:'capitalize'}}>{item?.detail.substr(0,150).replace( /(<([^>]+)>)/ig, '').replace(/&nbsp;/g, ' ')}{item?.detail.length > 150 ? '...' : ''}</Text>
   </View>
 
-  <View style={{ ...styles.flexView, marginVertical: moderateVerticalScale(8) }}>
+  <View style={{ ...styles.flexView, marginVertical: moderateVerticalScale(8), backgroundColor:'#f2f2f2',padding:10 }}>
     <View>
     <Text style={{
           fontSize: moderateScale(14),
@@ -179,7 +182,7 @@ const TaskListing = ({item}) => {
     </View>
   </View>
 
-  <View style={{ ...styles.flexView, marginVertical: moderateVerticalScale(8) }}>
+  <View style={{ ...styles.flexView, marginVertical: moderateVerticalScale(8),backgroundColor:'#f2f2f2',padding:10 }}>
     <View>
     <Text style={{
           fontSize: moderateScale(14),
@@ -193,10 +196,6 @@ const TaskListing = ({item}) => {
           fontWeight: '400',
           textTransform:'capitalize',
       }}>{item?.task_type ? taskTypeLabel[item?.task_type] : ''}</Text>
-    </View>
-
-    <View>
-      <Button onPress={()=>openModal(item)} title='Update Status' />
     </View>
 
     <View>
@@ -214,6 +213,9 @@ const TaskListing = ({item}) => {
       }}>{item?.assigned_by_name}</Text>
     </View>
   </View>
+  <View>
+      <Button onPress={()=>openModal(item)} title='Update Status' color={'red'} />
+    </View>
 
   </View>
 

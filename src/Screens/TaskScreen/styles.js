@@ -11,10 +11,10 @@ container: {
     // shadowColor: '#000',
     // shadowOffset: { width: 0, height: 2 },
     // shadowOpacity: 0.2,
-    elevation:4,
+    elevation:8,
     padding:moderateScale(16),
     borderRadius:moderateScale(4),
-    margin:moderateScale(5)
+    margin:moderateScale(8)
   },
   flexView: {
     flexDirection: 'row', 
