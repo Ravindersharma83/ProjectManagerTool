@@ -21,7 +21,7 @@ const TaskScreen = () => {
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
 
-  const [visibleItemCount, setVisibleItemCount] = useState(1); // for load more option
+  const [visibleItemCount, setVisibleItemCount] = useState(3); // for load more option
   const [isLoadingMore, setIsLoadingMore] = useState(false); // Track whether more data is being loaded
   let isEndReachedDebounced = false; // Track the debounce state
 
@@ -104,7 +104,7 @@ const TaskScreen = () => {
     console.log('tasks visible-',visibleItemCount);
     if(filter){
       setLoading(true);
-      setVisibleItemCount(1);
+      setVisibleItemCount(3);
       console.log('filter visible -',visibleItemCount);
     }
     const data = {
@@ -170,7 +170,10 @@ const TaskScreen = () => {
           onEndReached={handleEndReached} // Auto-scroll load functionality
           onEndReachedThreshold={0.1} // Distance from the end of the list to trigger onEndReached
           ListFooterComponent={() => {
-            // Render the activity indicator loader when more data is being loaded
+            if (tasks.length <= visibleItemCount) {
+              // Don't render the loading indicator if the data array is small
+              return null;
+            }
             return isLoadingMore ? <ActivityIndicator size="large" color={colors.themeColor} /> : null;
           }}
           />
