@@ -1,4 +1,4 @@
-import {View,Text,FlatList,RefreshControl,Alert,TouchableOpacity,Image,Modal,Button} from 'react-native';
+import {View,Text,FlatList,RefreshControl,Alert,TouchableOpacity,Image,Modal,Button,ActivityIndicator} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import styles from './styles';
 import {useLogin} from '../../Context/AuthContext';
@@ -20,6 +20,34 @@ const TaskScreen = () => {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
+
+  const [visibleItemCount, setVisibleItemCount] = useState(1); // for load more option
+  const [isLoadingMore, setIsLoadingMore] = useState(false); // Track whether more data is being loaded
+  let isEndReachedDebounced = false; // Track the debounce state
+
+  const loadMore = () => {
+    if (!isLoadingMore) {
+      setIsLoadingMore(true); // Set loading state
+      setTimeout(() => {
+        setVisibleItemCount(visibleItemCount + 2); // Load 2 more items
+        setIsLoadingMore(false); // Reset loading state
+      }, 1000); // Simulating a delay for demonstration
+    }else{
+      return;
+    }
+  };
+
+  // Callback for reaching the end of the list
+  const handleEndReached = () => {
+    // loadMore();
+    if (!isEndReachedDebounced) {
+      isEndReachedDebounced = true;
+      setTimeout(() => {
+        isEndReachedDebounced = false;
+        loadMore();
+      }, 500); // Debounce delay
+    }
+  };
 
   const [selectedOption, setSelectedOption] = useState('filter_days');
   const [selectedOptionsContent, setSelectedOptionsContent] = useState(dateOptions);
@@ -73,9 +101,11 @@ const TaskScreen = () => {
   }, []);
 
   const getTasks = async (filter) => {
+    console.log('tasks visible-',visibleItemCount);
     if(filter){
       setLoading(true);
-      console.log('filter called--------');
+      setVisibleItemCount(1);
+      console.log('filter visible -',visibleItemCount);
     }
     const data = {
       id: profile.id,
@@ -102,7 +132,7 @@ const TaskScreen = () => {
       console.log(`Error message: ${error}`);
     }
   };
-console.log('tasks-----',tasks);
+// console.log('tasks-----',tasks);
   return (
     <>
       <Loading visible={loading} title={'Fetching Your Tasks'} />
@@ -135,8 +165,14 @@ console.log('tasks-----',tasks);
             }}
           >
           <FlatList
-          data={tasks}
+          data={tasks.slice(0, visibleItemCount)}
           renderItem={({item}) => <TaskListing item={item} />}
+          onEndReached={handleEndReached} // Auto-scroll load functionality
+          onEndReachedThreshold={0.1} // Distance from the end of the list to trigger onEndReached
+          ListFooterComponent={() => {
+            // Render the activity indicator loader when more data is being loaded
+            return isLoadingMore ? <ActivityIndicator size="large" color={colors.themeColor} /> : null;
+          }}
           />
           </RefreshControl>
           </View>
