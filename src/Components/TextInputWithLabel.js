@@ -25,6 +25,7 @@ const TextInputWithLabel = ({
             onChangeText={onChangeText}
             onBlur={onBlur}
             value={value}
+            autoCapitalize='none'
             {...props}
         />
         {!!rightIcon ? 

@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View } from 'react-native';
-import React from 'react';
+import { Button, StyleSheet,Alert, Text, View,Modal, TextInput } from 'react-native';
+import React, { useState } from 'react';
 import styles from './styles'
 import { moderateScale, moderateVerticalScale, scale } from 'react-native-size-matters'
 import colors from '../../Styles/colors'
@@ -7,10 +7,66 @@ import { formatDate } from '../../Services/FormatDate'
 import { priorityLabels, priorityLabelsBgColor, priorityLabelsColor } from '../../Enums/PriorityEnum'
 import { statusLables } from '../../Enums/StatusEnum'
 import { taskTypeLabel } from '../../Enums/TaskTypeEnum'
+import DropDownPicker from 'react-native-dropdown-picker';
+import { axiosPostApi } from '../../Services/ApiService';
+import apiUrl from '../../Constants/apiUrl';
 
 
 const TaskListing = ({item}) => {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [userData, setUserData] = useState({
+    id: '',
+    task_status: '',
+    dev_hours: '',
+    updated_by: ''
+  });
+  const openModal = (item)=>{
+    setUserData({
+      id: item?.id,
+      task_status: item?.task_status,
+      dev_hours: item?.dev_hours,
+      updated_by: item?.user_id
+    });
+    setModalVisible(true)
+  }
+
+  const updateStatus = async()=>{
+    const data = {...userData,task_status:value}
+    try {
+      await axiosPostApi(apiUrl.update_task,data)
+        .then(async res => {
+          const apiResponse = res?.data;
+          // console.log('tasks--', apiResponse);
+          if (!apiResponse?.success) {
+            Alert.alert('Opps!', 'Something went wrong');
+          } else {
+            Alert.alert(apiResponse?.message);
+            setModalVisible(false);
+          }
+        })
+        .catch(error => {
+          console.log('error---', error);
+        });
+    } catch (error) {
+      console.log(`Error message: ${error}`);
+    }
+    // console.log('updated data---',data);
+    // console.log('updated data---',userData);
+    // console.log('selected option---',value);
+  }
+  const [open, setOpen] = useState(false);
+  // console.log(userData.task_status.toString());
+  // console.log(typeof(userData.task_status.toString()));
+  const [value, setValue] = useState(item.task_status.toString());
+  const [items, setItems] = useState([
+    {label: 'New', value: '1'},
+    {label: 'In Progress', value: '2'},
+    {label: 'Completed', value: '3'},
+    {label: 'Client Feedback', value: '4'},
+    {label: 'Delivered', value: '5'},
+  ]);
   return (
+    <>
     <View style={styles.flatStyle}>
     <View style={styles.flexView}>
         <View style={{backgroundColor:item?.task_priority ? priorityLabelsBgColor[item?.task_priority] : colors.white,padding:moderateScale(6),borderRadius:moderateScale(5)}}>
@@ -140,6 +196,10 @@ const TaskListing = ({item}) => {
     </View>
 
     <View>
+      <Button onPress={()=>openModal(item)} title='Update Status' />
+    </View>
+
+    <View>
     <Text style={{
           fontSize: moderateScale(14),
           color: colors.blackOpacity50,
@@ -156,6 +216,54 @@ const TaskListing = ({item}) => {
   </View>
 
   </View>
+
+  <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}>
+          <View style={{flex:1,backgroundColor: 'rgba(0,0,0,0.5)',justifyContent:'center',alignItems:'center'}}>
+            <View style={{backgroundColor:'white',height:moderateScale(300),width:moderateScale(300),borderRadius:20,elevation:40}}>
+              <View>
+                <Text style={{marginHorizontal:12,marginVertical:8,fontSize:18}}>Dev Hours</Text>
+                <TextInput
+                  style={{ borderWidth: 1, padding: 10, height: 40, marginHorizontal: 12 }}
+                  keyboardType='numeric'
+                  value={userData?.dev_hours.toString()}
+                  onChangeText={(text) => setUserData({ ...userData, dev_hours: text })}
+                />
+              </View>
+              <View style={{marginVertical:8}}>
+                <Text style={{marginHorizontal:12,marginVertical:8,fontSize:18}}>Status {userData.task_status.toString()}</Text>
+                {/* <TextInput
+                  style={{ borderWidth: 1, padding: 10, height: 40, marginHorizontal: 12 }}
+                  value={userData?.task_status.toString()}
+                  onChangeText={(text) => setUserData({ ...userData, task_status: text })}
+                /> */}
+                <DropDownPicker
+                  style={{width:'92%',marginHorizontal:12}}
+                  open={open}
+                  value={value}
+                  items={items}
+                  setOpen={setOpen}
+                  setValue={setValue}
+                  setItems={setItems}
+                />
+              </View>
+              <View style={{margin:12}}>
+                <Button onPress={()=>updateStatus()} title='Save' />
+              </View>
+              <View style={{margin:12}}>
+                <Button onPress={()=>setModalVisible(false)} title='Close' color={'red'} />
+              </View>
+            </View>
+            <View>
+            </View>
+          </View>
+        </Modal>
+  </>
   )
 }
 
