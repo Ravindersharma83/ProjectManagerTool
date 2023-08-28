@@ -15,9 +15,12 @@ import { priorityLabels } from '../../Enums/PriorityEnum';
 import { statusLables } from '../../Enums/StatusEnum';
 import NotFound from '../../Components/NotFound';
 
+import { useTaskContext } from '../../Context/TaskContext';
+
 const TaskScreen = () => {
+  const { state, dispatch } = useTaskContext(); // Get tasks from context
   const {profile} = useLogin();
-  const [tasks, setTasks] = useState([]);
+  // const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -119,8 +122,9 @@ const TaskScreen = () => {
           if (!apiResponse?.success) {
             Alert.alert('Opps!', 'Something went wrong');
           } else {
-            console.log('data fetched...');
-            setTasks(apiResponse?.data);
+            console.log('data fetched context...');
+            // setTasks(apiResponse?.data);
+            dispatch({ type: 'SET_TASKS', payload: apiResponse?.data }); // Update tasks in context
             setLoading(false);
             setModalVisible(false);
           }
@@ -156,7 +160,7 @@ const TaskScreen = () => {
                 />
             </TouchableOpacity>
           </View>
-        {tasks.length > 0 ?
+        {state.tasks.length > 0 ?
         <View style={{flex:1}}>
           <RefreshControl
             refreshing={loading}
@@ -165,12 +169,12 @@ const TaskScreen = () => {
             }}
           >
           <FlatList
-          data={tasks.slice(0, visibleItemCount)}
+          data={state.tasks.slice(0, visibleItemCount)}
           renderItem={({item}) => <TaskListing item={item} />}
           onEndReached={handleEndReached} // Auto-scroll load functionality
           onEndReachedThreshold={0.1} // Distance from the end of the list to trigger onEndReached
           ListFooterComponent={() => {
-            if (tasks.length <= visibleItemCount) {
+            if (state.tasks.length <= visibleItemCount) {
               // Don't render the loading indicator if the data array is small
               return null;
             }

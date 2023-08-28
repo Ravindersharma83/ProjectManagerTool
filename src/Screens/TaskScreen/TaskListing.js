@@ -11,8 +11,11 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import { axiosPostApi } from '../../Services/ApiService';
 import apiUrl from '../../Constants/apiUrl';
 
+import { useTaskContext } from '../../Context/TaskContext';
+
 
 const TaskListing = ({item}) => {
+  const { state,dispatch } = useTaskContext(); // Get tasks from context
   const [modalVisible, setModalVisible] = useState(false);
   const [userData, setUserData] = useState({
     id: '',
@@ -42,6 +45,13 @@ const TaskListing = ({item}) => {
           } else {
             Alert.alert(apiResponse?.message);
             setModalVisible(false);
+
+          // Update tasks in context
+          const updatedTasks = state.tasks.map((task) =>
+            task.id === userData.id ? { ...task, task_status: value, dev_hours:userData?.dev_hours } : task
+          );
+          dispatch({ type: 'SET_TASKS', payload: updatedTasks });
+
           }
         })
         .catch(error => {
