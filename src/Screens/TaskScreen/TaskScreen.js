@@ -105,11 +105,12 @@ const TaskScreen = ({navigation}) => {
   }, []);
 
   const getTasks = async (filter) => {
-    console.log('tasks visible-',visibleItemCount);
+    console.log('filter---',filterObj);
+    // console.log('tasks visible-',visibleItemCount);
     if(filter){
       setLoading(true);
       setVisibleItemCount(3);
-      console.log('filter visible -',visibleItemCount);
+      // console.log('filter visible -',visibleItemCount);
     }
     const data = {
       id: profile.id,
@@ -123,7 +124,7 @@ const TaskScreen = ({navigation}) => {
           if (!apiResponse?.success) {
             Alert.alert('Opps!', 'Something went wrong');
           } else {
-            console.log('data fetched context...');
+            // console.log('data fetched context...');
             // setTasks(apiResponse?.data);
             dispatch({ type: 'SET_TASKS', payload: apiResponse?.data }); // Update tasks in context
             setLoading(false);
@@ -137,6 +138,24 @@ const TaskScreen = ({navigation}) => {
       console.log(`Error message: ${error}`);
     }
   };
+
+  const clearFilter = ()=>{
+    setLoading(true);
+    setFilterObj({
+      filter_days:'Today',
+      task_status:'All',
+      task_priority:'All'
+    })
+    setPostData({
+      id:profile.id,
+      role_name:profile.role_name,
+      task_status:'',
+      filter_days:'',
+      task_priority:''
+    })
+    console.log('clear filter---',filterObj);
+    getTasks();
+  }
 // console.log('tasks-----',tasks);
   return (
     <>
@@ -166,6 +185,18 @@ const TaskScreen = ({navigation}) => {
           <RefreshControl
             refreshing={loading}
             onRefresh={()=>{
+              setFilterObj({
+                filter_days:'Today',
+                task_status:'All',
+                task_priority:'All'
+              })
+              setPostData({
+                id:profile.id,
+                role_name:profile.role_name,
+                task_status:'',
+                filter_days:'',
+                task_priority:''
+              })
               getTasks();
             }}
           >
@@ -269,8 +300,11 @@ const TaskScreen = ({navigation}) => {
                 <View>
                   <View style={{marginVertical:moderateScale(10)}}>
                   </View>
-                  <View>
+                  <View style={{marginVertical:10}}>
                     <Button color={colors.themeColor} onPress={()=>getTasks(true)} title={'Apply Filters'}/>
+                  </View>
+                  <View>
+                    <Button color={'red'} onPress={()=>{clearFilter()}} title={'Clear Filters'}/>
                   </View>
                 </View>
             </View>
