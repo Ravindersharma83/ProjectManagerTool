@@ -7,24 +7,14 @@ import { formatDate } from '../../Services/FormatDate'
 import { taskTypeLabel } from '../../Enums/TaskTypeEnum'
 import { priorityLabels, priorityLabelsBgColor, priorityLabelsColor } from '../../Enums/PriorityEnum'
 import { statusLables } from '../../Enums/StatusEnum'
+import HeaderComp from '../../Components/HeaderComp'
+import imagePath from '../../Constants/imagePath'
 
-const TaskDetailScreen = ({route}) => {
+const TaskDetailScreen = ({route,navigation}) => {
     const{item} = route.params;
   return (
     <ScrollView style={styles.container}>
-        <View style={{...styles.flexView, justifyContent: 'space-between'}}>
-            <View></View>
-            <Text
-                style={{
-                fontWeight: 'bold',
-                fontSize: 24,
-                padding: moderateScale(10),
-                // color: colors.themeColor,
-                }}>
-                Task Detail
-            </Text>
-            <View></View>
-        </View>
+    <HeaderComp title={'Task Detail'} leftIcon={imagePath.icBack} onLeftPress={()=>navigation.goBack()}/>
         <View style={{padding:moderateScale(10),margin:moderateScale(8),backgroundColor:colors.themeColor,borderRadius:moderateScale(10)}}>
             <Text style={{color:'#fff',fontSize:scale(16),fontWeight:'bold',textTransform:'capitalize',marginTop:moderateScale(10),marginLeft:moderateScale(10)}}>{item?.pro_name}</Text>
             <Text style={{color:'#fff',fontSize:scale(20),fontWeight:'bold', textTransform:'capitalize',marginHorizontal:moderateScale(10)}}><Text style={{fontWeight:'100'}}>{'#'+ item.task_number}</Text> - {item?.task_name}</Text>

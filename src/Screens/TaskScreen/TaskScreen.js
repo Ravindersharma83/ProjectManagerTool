@@ -17,6 +17,7 @@ import NotFound from '../../Components/NotFound';
 
 import { useTaskContext } from '../../Context/TaskContext';
 import navigationStrings from '../../Constants/navigationStrings';
+import HeaderComp from '../../Components/HeaderComp';
 
 const TaskScreen = ({navigation}) => {
   const { state, dispatch } = useTaskContext(); // Get tasks from context
@@ -160,26 +161,8 @@ const TaskScreen = ({navigation}) => {
   return (
     <>
       <Loading visible={loading} title={'Fetching Your Tasks'} />
-          <View style={styles.container}>
-          <View style={{...styles.flexView, justifyContent: 'space-between'}}>
-            <View></View>
-            <Text
-              style={{
-                fontWeight: 'bold',
-                fontSize: 24,
-                padding: moderateScale(10),
-                color: colors.themeColor,
-              }}>
-              Task Lists
-            </Text>
-            <TouchableOpacity onPress={() => setModalVisible(true)}>
-              <Image
-                style={{marginRight: moderateScale(5)}}
-                tintColor={colors.themeColor}
-                source={imagePath.filter}
-                />
-            </TouchableOpacity>
-          </View>
+        <View style={styles.container}>
+        <HeaderComp title={'Task Lists'} rightIcon={imagePath.filter} onRightPress={() => setModalVisible(true)}/>
         {state.tasks.length > 0 ?
         <View style={{flex:1}}>
           <RefreshControl
@@ -224,28 +207,7 @@ const TaskScreen = ({navigation}) => {
         onRequestClose={() => {
           setModalVisible(!modalVisible);
         }}>
-
-        <View style={{...styles.flexView, justifyContent: 'space-between'}}>
-          <View></View>
-          <Text
-            style={{
-              fontWeight: 'bold',
-              fontSize: 24,
-              padding: moderateScale(10),
-              color: colors.themeColor,
-            }}>
-            Task Filters
-          </Text>
-          <TouchableOpacity onPress={() => setModalVisible(false)}>
-            <Image
-              style={{marginRight: moderateScale(5)}}
-              tintColor={colors.themeColor}
-              source={imagePath.close}
-            />
-          </TouchableOpacity>
-        </View>
-
-
+      <HeaderComp title={'Task Filters'} rightIcon={imagePath.close} onRightPress={() => setModalVisible(false)}/>
       {loading ? 
         <Loading visible={true} title={'Filter out your choices.Please wait'}/>
         :
