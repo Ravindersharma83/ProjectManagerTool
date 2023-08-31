@@ -5,4 +5,5 @@ export default {
     LEAVE:'Leave',
     TASK_DETAIL_SCREEN:"TaskDetailScreen",
     TAB_ROUTES:'TabRoutes',
+    ADD_LEAVE:'AddLeave',
 }
