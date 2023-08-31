@@ -16,5 +16,7 @@ export default {
     location : require('../Assets/images/location.png'),
     filter : require('../Assets/images/filter.png'),
     close : require('../Assets/images/close.png'),
+    leave : require('../Assets/images/leave.png'),
+    leaveAdd : require('../Assets/images/leaveAdd.png'),
 
 }

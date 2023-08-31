@@ -1,7 +1,7 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import * as React from 'react';
 import { Text,Image } from 'react-native';
-import {Home, Task } from '../Screens';
+import {Home, LeaveScreen, Task } from '../Screens';
 import colors from '../Styles/colors';
 import navigationStrings from '../Constants/navigationStrings';
 import imagePath from '../Constants/imagePath';
@@ -39,6 +39,20 @@ export default function TabRoutes(){
                     return(
                         <Image
                             source={imagePath.task}
+                            style={{tintColor: focused ? colors.themeColor : colors.blackOpacity50}}
+                        />
+                    )
+                },
+            }}
+        />
+        <BottomTab.Screen 
+            name={navigationStrings.LEAVE} 
+            component={LeaveScreen}
+            options={{
+                tabBarIcon:({focused}) => {
+                    return(
+                        <Image
+                            source={imagePath.leave}
                             style={{tintColor: focused ? colors.themeColor : colors.blackOpacity50}}
                         />
                     )
