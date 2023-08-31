@@ -1,5 +1,5 @@
 import { Button, StyleSheet,Alert, Text, View,Modal, TextInput } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './styles'
 import { moderateScale, moderateVerticalScale, scale } from 'react-native-size-matters'
 import colors from '../../Styles/colors'
@@ -12,9 +12,12 @@ import { axiosPostApi } from '../../Services/ApiService';
 import apiUrl from '../../Constants/apiUrl';
 
 import { useTaskContext } from '../../Context/TaskContext';
+import navigationStrings from '../../Constants/navigationStrings';
+import { useNavigation } from '@react-navigation/native';
 
 
-const TaskListing = ({item}) => {
+const TaskListing = ({navigation,item}) => {
+  // const navigation = useNavigation();
   const { state,dispatch } = useTaskContext(); // Get tasks from context
   const [modalVisible, setModalVisible] = useState(false);
   const [userData, setUserData] = useState({
@@ -94,11 +97,10 @@ const TaskListing = ({item}) => {
               color: colors.black,
               fontWeight: 'bold',
               textTransform:'uppercase',
-              marginTop: moderateVerticalScale(8),
               padding:moderateScale(6),
               borderRadius:moderateScale(5),
               backgroundColor:colors.themeColor
-          }}>{item?.pro_name}
+          }}>{item?.pro_name.substr(0,20)}{item?.pro_name.length > 20 ? '...' : ''}
         </Text>
       </View>
         <View style={{backgroundColor:'lightgreen',padding:moderateScale(6),borderRadius:moderateScale(5)}}>
@@ -125,7 +127,7 @@ const TaskListing = ({item}) => {
           fontWeight: 'bold',
           marginLeft:moderateScale(5),
           textTransform:'capitalize',
-      }}>{item?.task_name}</Text>
+      }}>{item?.task_name.substr(0,35)}{item?.task_name.length > 35 ? '...' : ''}</Text>
   </View>
 
   <View>
@@ -162,7 +164,7 @@ const TaskListing = ({item}) => {
     </View>
   </View>
 
-  <View style={{ ...styles.flexView, marginVertical: moderateVerticalScale(8) }}>
+  <View style={{ ...styles.flexView,padding:10 }}>
     <View>
     <Text style={{
           fontSize: moderateScale(14),
@@ -184,11 +186,13 @@ const TaskListing = ({item}) => {
           textTransform: 'uppercase'
 
       }}>Bill Hours</Text>
-      <Text style={{
-          fontSize: scale(14),
-          color: colors.black,
-          fontWeight: '400',
-      }}>{item?.bill_hours ? item?.bill_hours : 'NA'}</Text>
+      <View style={{alignItems:'flex-end'}}>
+        <Text style={{
+            fontSize: scale(14),
+            color: colors.black,
+            fontWeight: '400',
+        }}>{item?.bill_hours ? item?.bill_hours : 'NA'}</Text>
+      </View>
     </View>
   </View>
 
@@ -215,17 +219,25 @@ const TaskListing = ({item}) => {
           textTransform: 'uppercase'
 
       }}>Assigned By</Text>
+      <View style={{alignItems:'flex-end'}}>
       <Text style={{
           fontSize: scale(14),
           color: colors.black,
           fontWeight: '400',
           textTransform:'capitalize',
       }}>{item?.assigned_by_name}</Text>
+      </View>
     </View>
   </View>
-  <View>
+
+  <View style={{ ...styles.flexView, marginVertical: moderateVerticalScale(4) }}>
+    <View>
       <Button onPress={()=>openModal(item)} title='Update Status' color={'red'} />
     </View>
+    <View>
+      <Button onPress={()=>navigation.navigate(navigationStrings.TASK_DETAIL_SCREEN,{item})} title='View Details' color={colors.themeColor} />
+    </View>
+  </View>
 
   </View>
 

@@ -16,8 +16,9 @@ import { statusLables } from '../../Enums/StatusEnum';
 import NotFound from '../../Components/NotFound';
 
 import { useTaskContext } from '../../Context/TaskContext';
+import navigationStrings from '../../Constants/navigationStrings';
 
-const TaskScreen = () => {
+const TaskScreen = ({navigation}) => {
   const { state, dispatch } = useTaskContext(); // Get tasks from context
   const {profile} = useLogin();
   // const [tasks, setTasks] = useState([]);
@@ -170,7 +171,7 @@ const TaskScreen = () => {
           >
           <FlatList
           data={state.tasks.slice(0, visibleItemCount)}
-          renderItem={({item}) => <TaskListing item={item} />}
+          renderItem={({item}) => <TaskListing item={item} navigation={navigation} />}
           onEndReached={handleEndReached} // Auto-scroll load functionality
           onEndReachedThreshold={0.1} // Distance from the end of the list to trigger onEndReached
           ListFooterComponent={() => {

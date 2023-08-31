@@ -7,10 +7,10 @@ export const priorityLabels = {
 export const priorityLabelsColor = {
     1: 'red',
     2: 'orange',
-    3: 'white'
+    3: 'black'
 };
 export const priorityLabelsBgColor = {
     1: 'pink',
     2: 'yellow',
-    3: 'gray'
+    3: 'lightgray'
 };

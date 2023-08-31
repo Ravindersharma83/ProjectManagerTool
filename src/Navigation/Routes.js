@@ -7,6 +7,7 @@ import Loading from '../Components/Loading';
 
 import { useLogin } from '../Context/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import HomeStack from './HomeStack';
 
 
 export default function Routes(){
@@ -37,7 +38,7 @@ export default function Routes(){
 
     return(
         <NavigationContainer>
-            {isLoggedIn ? <TabRoutes /> : <AuthStack />}
+            {isLoggedIn ? <HomeStack /> : <AuthStack />}
         </NavigationContainer>
     );
 }
