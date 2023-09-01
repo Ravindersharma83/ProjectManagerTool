@@ -2,53 +2,102 @@ import { View, Text, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
 import styles from './styles'
 import DateTimePicker from '@react-native-community/datetimepicker';
+import HeaderComp from '../../Components/HeaderComp';
+import imagePath from '../../Constants/imagePath';
+import { moderateScale } from 'react-native-size-matters';
+import colors from '../../Styles/colors';
+import TextInputWithLabel from '../../Components/TextInputWithLabel';
 
-const AddLeaveScreen = () => {
-  const [date, setDate] = useState(new Date());
+const AddLeaveScreen = ({navigation}) => {
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+  const [startTime, setStartTime] = useState(new Date());
+  const [endTime, setEndTime] = useState(new Date());
   const [mode, setMode] = useState('date');
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState(null);
 
-  const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate;
-    setShow(false);
-    setDate(currentDate);
+  const onDateChange = (event, selectedDate, type) => {
+    setShow(null);
+    if (type === 'start') {
+      setStartDate(selectedDate);
+    } else {
+      setEndDate(selectedDate);
+    }
   };
 
-  const showMode = (currentMode) => {
-    setShow(true);
+  const onTimeChange = (event, selectedTime, type) => {
+    setShow(null);
+    if (type === 'start') {
+      setStartTime(selectedTime);
+    } else {
+      setEndTime(selectedTime);
+    }
+  };
+
+  const showPicker = (currentMode, pickerType) => {
+    setShow(pickerType);
     setMode(currentMode);
   };
 
-  const showDatepicker = () => {
-    showMode('date');
-  };
-
-  const showTimepicker = () => {
-    showMode('time');
+  const renderDateTimePicker = (value, onChange) => {
+    return show === value && (
+      <DateTimePicker
+        testID="dateTimePicker"
+        value={value === 'start' ? startDate : endDate}
+        mode={mode}
+        onChange={(event, selectedDate) => onChange(event, selectedDate, value)}
+      />
+    );
   };
 
   return (
-    <View style={{...styles.container,justifyContent:'center',alignItems:'center'}}>
-      <TouchableOpacity onPress={showDatepicker}>
-          <View style={styles.inputView}>
-            <Text style={styles.textInput}>Select DOB - {date.toLocaleDateString()}</Text>
-          </View>
+    <View style={styles.container}>
+      <HeaderComp title={'Apply For Leave'}  leftIcon={imagePath.icBack} onLeftPress={()=> navigation.goBack()}/>
+      <View style={{padding:moderateScale(10),margin:moderateScale(8)}}>
+        <TextInputWithLabel label={'Leave Reason'} placeholder={'Enter Leave Reason'} multiline={true}
+        numberOfLines={2}/>
+
+        <TouchableOpacity onPress={() => showPicker('date', 'start')}>
+          <TextInputWithLabel
+            value={startDate.toDateString()}
+            label={'Start Date'}
+            placeholder={'Select Start Date'}
+            editable={false}
+          />
         </TouchableOpacity>
-        <TouchableOpacity onPress={showTimepicker}>
-          <View style={styles.inputView}>
-            <Text style={styles.textInput}>Select Time - {date.toLocaleTimeString()}</Text>
-          </View>
+        {renderDateTimePicker('start', onDateChange)}
+
+        <TouchableOpacity onPress={() => showPicker('date', 'end')}>
+          <TextInputWithLabel
+            value={endDate.toDateString()}
+            label={'End Date'}
+            placeholder={'Select End Date'}
+            editable={false}
+          />
         </TouchableOpacity>
-        {show && (
-        <DateTimePicker
-          testID="dateTimePicker"
-          value={date}
-          mode={mode}
-          // is24Hour={true}
-          onChange={onChange}
-        />
-      )}
-      <Text>selected: {date.toLocaleString()}</Text>
+        {renderDateTimePicker('end', onDateChange)}
+
+        <TouchableOpacity onPress={() => showPicker('time', 'start')}>
+          <TextInputWithLabel
+            value={startTime.toTimeString()}
+            label={'Start Time'}
+            placeholder={'Select Start Time'}
+            editable={false}
+          />
+        </TouchableOpacity>
+        {renderDateTimePicker('start', onTimeChange)}
+
+        <TouchableOpacity onPress={() => showPicker('time', 'end')}>
+          <TextInputWithLabel
+            value={endTime.toTimeString()}
+            label={'End Time'}
+            placeholder={'Select End Time'}
+            editable={false}
+          />
+        </TouchableOpacity>
+        {renderDateTimePicker('end', onTimeChange)}
+        
+      </View>
     </View>
   )
 }
