@@ -5,7 +5,7 @@ import { moderateScale, moderateVerticalScale, scale } from 'react-native-size-m
 import colors from '../../Styles/colors'
 
 
-const TaskListing = ({navigation,item}) => {
+const TaskListing = ({navigation,item,title}) => {
   return (
     <>
     <View style={styles.flatStyle}>
@@ -30,7 +30,7 @@ const TaskListing = ({navigation,item}) => {
 
         <View>
             <Text style={styles.borderLine}></Text>
-            <Text style={styles.leaveReason}>{'Going To Fight With Thanos Aug 31,2023 (Full Day) To Sep 02,2023 (Full Day) Aug 31,2023 (Full Day) To Sep 02,2023 (Full Day)'}</Text>
+            <Text style={styles.leaveReason}>{title}</Text>
         </View>
 
 </View>

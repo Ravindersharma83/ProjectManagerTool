@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View,TextInput,Image,TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View,TextInput,Image,TouchableOpacity,ScrollView } from 'react-native'
 import React from 'react'
 import { scale,moderateVerticalScale } from 'react-native-size-matters';
 import colors from '../Styles/colors';
@@ -16,7 +16,7 @@ const TextInputWithLabel = ({
         ...props
     }) => {
   return (
-    <View style={{...styles.inputStyle,...inputStyle}}>
+    <ScrollView keyboardShouldPersistTaps='handled' style={{...styles.inputStyle,...inputStyle}}>
         <Text style={styles.labelTextStyle}>{label}</Text>
         <View style={styles.flexView}>
         <TextInput 
@@ -34,7 +34,7 @@ const TextInputWithLabel = ({
             </TouchableOpacity>
              : null}
         </View>
-    </View>
+    </ScrollView>
   )
 }
 

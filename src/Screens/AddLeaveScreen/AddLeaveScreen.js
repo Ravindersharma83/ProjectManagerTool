@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity } from 'react-native'
+import { View, Text, TouchableOpacity, Alert, ScrollView } from 'react-native'
 import React, { useState } from 'react'
 import styles from './styles'
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -11,10 +11,11 @@ import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'reac
 import ButtonComp from '../../Components/ButtonComp';
 
 const AddLeaveScreen = ({navigation}) => {
+  const [leaveReason,setLeaveReason] = useState('');
   const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
-  const [startTime, setStartTime] = useState(new Date());
-  const [endTime, setEndTime] = useState(new Date());
+  const [endDate, setEndDate] = useState(null);
+  const [startTime, setStartTime] = useState(null);
+  const [endTime, setEndTime] = useState(null);
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState('none');
 
@@ -23,13 +24,13 @@ const AddLeaveScreen = ({navigation}) => {
   const [endDay, setEndDay] = useState(0);
 
   const leave_props = [
-    { label: 'Planned', value: 'plan' },
+    { label: 'Planned', value: 'planned' },
     { label: 'Emergency', value: 'emergency' },
     { label: 'Short', value: 'short' },
   ];
   const day_props = [
-    { label: 'Full Day', value: 'full day' },
-    { label: 'Half Day', value: 'half day' },
+    { label: 'Full Day', value: 'Full' },
+    { label: 'Half Day', value: 'Half' },
   ];
 
   const onStartDateChange = (event, selectedDate) => {
@@ -60,12 +61,44 @@ const AddLeaveScreen = ({navigation}) => {
     setMode(currentMode);
   };
 
+  // getting form data
+  const getFormData = ()=>{
+    if(leaveReason == "" || leaveReason.length < 20){
+      Alert.alert('Opps!','Leave reason is required and should be more than 20 characters');
+      return;
+    }
+    console.log('label---',leave_props[leaves].label);
+    if(leave_props[leaves].label == 'Short'){
+      day_props[startDay].value = '';
+      day_props[endDay].value = '';
+      console.log('endtime---',endTime);
+      if(endTime == null || startTime == null){
+        Alert.alert('Opps!','Start and End time are required');
+        return;
+      }
+    }
+    const data = {
+      leave_reason : leaveReason,
+      start_date : startDate ? startDate.toISOString().split('T')[0] : null,
+      end_date : endDate ? endDate.toISOString().split('T')[0] : null,
+      start_full_half : day_props[startDay].value,
+      end_full_half : day_props[endDay].value,
+      start_time : startTime ? startTime.toTimeString().split(' ')[0] : null,
+      end_time : endTime ? endTime.toTimeString().split(' ')[0] : null,
+      leave_type : leave_props[leaves].value
+    }
+    console.log('leave reason---',data);
+    console.log('start date split ---',data.start_date);
+    console.log('end time split ---',data.end_time);
+    // setLeaveReason('');
+  }
+
   return (
     <View style={styles.container}>
       <HeaderComp title={'Apply For Leave'}  leftIcon={imagePath.icBack} onLeftPress={()=> navigation.goBack()}/>
       <View style={{padding:moderateScale(10),margin:moderateScale(8)}}>
         <TextInputWithLabel label={'Leave Reason'} placeholder={'Enter Leave Reason'} multiline={true}
-        numberOfLines={2}/>
+        numberOfLines={2} value={leaveReason} onChangeText={(value)=>setLeaveReason(value)}/>
 
       <View style={{flexDirection:'row',justifyContent:'space-between',marginVertical:10}}>
         <TouchableOpacity onPress={()=>showMode('date','showStartDatePicker')}>
@@ -82,12 +115,12 @@ const AddLeaveScreen = ({navigation}) => {
         )}
       {leave_props[leaves].label != 'Short' ? <>
         <TouchableOpacity onPress={()=>showMode('date','showEndDatePicker')}>
-          <TextInputWithLabel inputStyle={{width:moderateScale(150)}} value={endDate.toDateString()} label={'End Date'} placeholder={'Select End Date'} editable={false}/>
+          <TextInputWithLabel inputStyle={{width:moderateScale(150)}} value={endDate ? endDate.toDateString() : null} label={'End Date'} placeholder={'Select End Date'} editable={false}/>
         </TouchableOpacity>
         {show==="showEndDatePicker" && (
           <DateTimePicker
             testID="dateTimePicker"
-            value={endDate}
+            value={endDate || new Date()}
             mode={mode}
             // is24Hour={true}
             onChange={onEndDateChange}
@@ -164,7 +197,7 @@ const AddLeaveScreen = ({navigation}) => {
             <View style={{flexDirection:'row',justifyContent:'space-between',marginVertical:10}}>
             <TouchableOpacity onPress={() => showMode('time', 'showStartTimePicker')}>
               <TextInputWithLabel
-                value={startTime.toLocaleTimeString()}
+                value={startTime ? startTime.toLocaleTimeString() : null }
                 label={'Start Time'}
                 placeholder={'Select Start Time'}
                 editable={false}
@@ -174,7 +207,7 @@ const AddLeaveScreen = ({navigation}) => {
             {show === 'showStartTimePicker' && (
               <DateTimePicker
                 testID="dateTimePicker"
-                value={startTime}
+                value={startTime || new Date()}
                 mode={mode}
                 // is24Hour={true}
                 onChange={onStartTimeChange}
@@ -183,7 +216,7 @@ const AddLeaveScreen = ({navigation}) => {
 
             <TouchableOpacity onPress={() => showMode('time', 'showEndTimePicker')}>
               <TextInputWithLabel
-                value={endTime.toLocaleTimeString()}
+                value={endTime ? endTime.toLocaleTimeString() : null}
                 label={'End Time'}
                 placeholder={'Select End Time'}
                 editable={false}
@@ -193,7 +226,7 @@ const AddLeaveScreen = ({navigation}) => {
             {show === 'showEndTimePicker' && (
               <DateTimePicker
                 testID="dateTimePicker"
-                value={endTime}
+                value={endTime || new Date()}
                 mode={mode}
                 // is24Hour={true}
                 onChange={onEndTimeChange}
@@ -233,7 +266,7 @@ const AddLeaveScreen = ({navigation}) => {
       </RadioForm>
       </View>
       <View style={{flex:1,margin:moderateScale(20),justifyContent:'flex-end'}}>
-        <ButtonComp btnText={'Apply Leave'}/>
+        <ButtonComp btnText={'Apply Leave'} onPress={()=>getFormData()}/>
       </View>
     </View>
   )

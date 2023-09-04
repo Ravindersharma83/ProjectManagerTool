@@ -10,10 +10,9 @@ const LeaveScreen = ({navigation}) => {
   return (
     <ScrollView style={styles.container}>
       <HeaderComp title={'My Leaves'} rightIcon={imagePath.leaveAdd} onRightPress={()=>{navigation.navigate(navigationStrings.ADD_LEAVE)}}/>
-      <LeaveListing/>
-      <LeaveListing/>
-      <LeaveListing/>
-      <LeaveListing/>
+      <LeaveListing title="Going For Coffee Break With Wanda . Please Don't Tell To Mr Stark"/>
+      <LeaveListing title='Going to fight with thanos'/>
+      <LeaveListing title='Going to fight with dormamo'/>
     </ScrollView>
   )
 }
