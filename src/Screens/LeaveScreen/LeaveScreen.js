@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, FlatList } from 'react-native'
+import { View, Text, ScrollView, FlatList,RefreshControl } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import HeaderComp from '../../Components/HeaderComp'
 import imagePath from '../../Constants/imagePath'
@@ -12,7 +12,7 @@ import apiUrl from '../../Constants/apiUrl'
 import Loading from '../../Components/Loading'
 
 const LeaveScreen = ({navigation}) => {
-  const { state, dispatch } = useLeaveContext(); // Get tasks from context
+  const { state, dispatch } = useLeaveContext(); // Get leaves from context
   const {profile} = useLogin();
   const [loading, setLoading] = useState(true);
   useEffect(() => {
@@ -42,8 +42,14 @@ const LeaveScreen = ({navigation}) => {
   return (
     <>
     <Loading visible={loading} title={'Fetching Your Leaves'} />
-    <View style={styles.container}>
       <HeaderComp title={'My Leaves'} rightIcon={imagePath.leaveAdd} onRightPress={()=>{navigation.navigate(navigationStrings.ADD_LEAVE)}}/>
+    <View style={styles.container}>
+      <RefreshControl
+            refreshing={loading}
+            onRefresh={()=>{
+              getLeaves();
+            }}
+      >
       <FlatList
           data={state.leaves}
           renderItem={({item}) => <LeaveListing item={item} navigation={navigation} />}
@@ -57,6 +63,7 @@ const LeaveScreen = ({navigation}) => {
           //   return isLoadingMore ? <ActivityIndicator size="large" color={colors.themeColor} /> : null;
           // }}
           />
+        </RefreshControl>
     </View>
     </>
   )
