@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, FlatList,RefreshControl } from 'react-native'
+import { View, Text, ScrollView, FlatList,RefreshControl,ActivityIndicator } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import HeaderComp from '../../Components/HeaderComp'
 import imagePath from '../../Constants/imagePath'
@@ -10,11 +10,40 @@ import { useLogin } from '../../Context/AuthContext'
 import { axiosPostApi } from '../../Services/ApiService'
 import apiUrl from '../../Constants/apiUrl'
 import Loading from '../../Components/Loading'
+import colors from '../../Styles/colors'
 
 const LeaveScreen = ({navigation}) => {
   const { state, dispatch } = useLeaveContext(); // Get leaves from context
   const {profile} = useLogin();
   const [loading, setLoading] = useState(true);
+
+  const [visibleItemCount, setVisibleItemCount] = useState(3); // for load more option
+  const [isLoadingMore, setIsLoadingMore] = useState(false); // Track whether more data is being loaded
+  let isEndReachedDebounced = false; // Track the debounce state
+
+  const loadMore = () => {
+    if (!isLoadingMore) {
+      setIsLoadingMore(true); // Set loading state
+      setTimeout(() => {
+        setVisibleItemCount(visibleItemCount + 2); // Load 2 more items
+        setIsLoadingMore(false); // Reset loading state
+      }, 1000); // Simulating a delay for demonstration
+    }else{
+      return;
+    }
+  };
+  // Callback for reaching the end of the list
+  const handleEndReached = () => {
+    // loadMore();
+    if (!isEndReachedDebounced) {
+      isEndReachedDebounced = true;
+      setTimeout(() => {
+        isEndReachedDebounced = false;
+        loadMore();
+      }, 500); // Debounce delay
+    }
+  };
+
   useEffect(() => {
     getLeaves();
   }, []);
@@ -51,17 +80,17 @@ const LeaveScreen = ({navigation}) => {
             }}
       >
       <FlatList
-          data={state.leaves}
+          data={state.leaves.slice(0, visibleItemCount)}
           renderItem={({item}) => <LeaveListing item={item} navigation={navigation} />}
-          //onEndReached={handleEndReached} // Auto-scroll load functionality
-          //onEndReachedThreshold={0.1} // Distance from the end of the list to trigger onEndReached
-          // ListFooterComponent={() => {
-          //   if (state.tasks.length <= visibleItemCount) {
-          //     // Don't render the loading indicator if the data array is small
-          //     return null;
-          //   }
-          //   return isLoadingMore ? <ActivityIndicator size="large" color={colors.themeColor} /> : null;
-          // }}
+          onEndReached={handleEndReached} // Auto-scroll load functionality
+          onEndReachedThreshold={0.1} // Distance from the end of the list to trigger onEndReached
+          ListFooterComponent={() => {
+            if (state.leaves.length <= visibleItemCount) {
+              // Don't render the loading indicator if the data array is small
+              return null;
+            }
+            return isLoadingMore ? <ActivityIndicator size="large" color={colors.themeColor} /> : null;
+          }}
           />
         </RefreshControl>
     </View>
