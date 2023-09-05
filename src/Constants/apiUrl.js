@@ -3,5 +3,6 @@ export default {
     login:'login',
     mytask:'mytask',
     update_task:'update_task',
-    getleaves:'getleaves'
+    getleaves:'getleaves',
+    updateleaves:'updateleaves'
 }
