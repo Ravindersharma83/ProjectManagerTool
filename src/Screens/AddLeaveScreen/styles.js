@@ -23,6 +23,19 @@ container: {
     marginLeft: -10,
     color:'grey'
   },
+  btnStyle:{
+    height:moderateScale(48),
+    backgroundColor:'red',
+    borderRadius:moderateScale(4),
+    justifyContent:'center',
+    alignItems:'center'
+},
+btnTextStyle:{
+    fontSize:scale(12),
+    color:colors.white,
+    fontWeight:'bold',
+    textTransform:'uppercase'
+}
 })
 
 export default styles;
