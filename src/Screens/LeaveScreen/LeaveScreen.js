@@ -11,6 +11,7 @@ import { axiosPostApi } from '../../Services/ApiService'
 import apiUrl from '../../Constants/apiUrl'
 import Loading from '../../Components/Loading'
 import colors from '../../Styles/colors'
+import { useFocusEffect } from '@react-navigation/native';
 
 const LeaveScreen = ({navigation}) => {
   const { state, dispatch } = useLeaveContext(); // Get leaves from context
@@ -44,9 +45,16 @@ const LeaveScreen = ({navigation}) => {
     }
   };
 
-  useEffect(() => {
-    getLeaves();
-  }, []);
+  // useEffect(() => {
+  //   getLeaves();
+  // }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      const unsubscribe = getLeaves();
+
+      return () => unsubscribe;
+    }, [])
+  );
 
   const getLeaves = async ()=>{
     try {

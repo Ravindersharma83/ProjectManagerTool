@@ -5,5 +5,6 @@ export default {
     update_task:'update_task',
     getleaves:'getleaves',
     updateleaves:'updateleaves',
-    get_reporting_head:'getreportinghead'
+    get_reporting_head:'getreportinghead',
+    applyleave:'applyleave'
 }

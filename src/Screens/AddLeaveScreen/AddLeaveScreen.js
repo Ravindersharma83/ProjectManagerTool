@@ -13,6 +13,7 @@ import ButtonComp from '../../Components/ButtonComp';
 import { axiosPostApi } from '../../Services/ApiService';
 import apiUrl from '../../Constants/apiUrl';
 import { useLogin } from '../../Context/AuthContext';
+import navigationStrings from '../../Constants/navigationStrings';
 
 const AddLeaveScreen = ({navigation}) => {
   const {profile} = useLogin();
@@ -94,7 +95,7 @@ const AddLeaveScreen = ({navigation}) => {
   };
 
   // getting form data
-  const getFormData = ()=>{
+  const getFormData = async()=>{
     if(leaveReason == "" || leaveReason.length < 20){
       Alert.alert('Opps!','Leave reason is required and should be more than 20 characters');
       return;
@@ -137,7 +138,24 @@ const AddLeaveScreen = ({navigation}) => {
       status : 1
 
     }
-    console.log('leave reason---',data);
+    
+    try {
+      await axiosPostApi(apiUrl.applyleave,data)
+      .then((res)=>{
+        const apiResponse = res?.data;
+        if(!apiResponse?.success){
+          Alert.alert('Opps!','Something went wrong')
+        }
+        Alert.alert("Success",apiResponse?.message)
+        navigation.navigate(navigationStrings.LEAVE);
+        console.log('resp---',apiResponse);
+      })
+      .catch((error)=>{
+        console.log('api error---',error);
+      })
+    } catch (error) {
+      console.log('error---',error);
+    }
   }
 
   return (
