@@ -8,16 +8,16 @@ import SendNotification from './src/Screens/SendNotification'
 
 const App = () => {
   return (
-    // <LoginProvider>
-    // <TaskProvider>
-    // <LeaveProvider>
-    //   <View style={{flex:1}}>
-    //     <Routes/>
-    //   </View>
-    // </LeaveProvider>
-    // </TaskProvider>
-    // </LoginProvider>
-    <SendNotification/>
+    <LoginProvider>
+    <TaskProvider>
+    <LeaveProvider>
+      <View style={{flex:1}}>
+        <Routes/>
+      </View>
+    </LeaveProvider>
+    </TaskProvider>
+    </LoginProvider>
+    // <SendNotification/>
 
   )
 }
