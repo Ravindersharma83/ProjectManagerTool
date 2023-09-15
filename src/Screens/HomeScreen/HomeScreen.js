@@ -9,10 +9,11 @@ import Loading from '../../Components/Loading'
 
 const HomeScreen = () => {
   const { isLoggedIn,setIsLoggedIn, profile , setProfile} = useLogin();
-    const logout = ()=>{
+    const logout = async()=>{
         try {
           setIsLoggedIn(false)
           AsyncStorage.setItem('loggedIn', JSON.stringify(false))
+          await AsyncStorage.removeItem('user')
           } catch(e) {
             // remove error
           }

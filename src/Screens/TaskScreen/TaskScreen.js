@@ -198,7 +198,7 @@ const TaskScreen = ({navigation}) => {
           />
           </RefreshControl>
           </View>
-          : <NotFound/>}
+          : <NotFound message='No Task Found'/>}
         </View>
       <Modal
         animationType="slide"

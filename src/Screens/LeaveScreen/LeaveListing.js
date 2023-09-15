@@ -74,14 +74,15 @@ const TaskListing = ({navigation,item}) => {
 
     <View>
     <View style={{alignItems:'flex-end'}}>
-      {item?.status === 1 ? <TouchableOpacity style={{backgroundColor:'red',padding:4,elevation:4,borderRadius:10}} onPress={()=> cancelLeave(item?.id)}>
-        <Text style={{color:colors.white}}>Cancelled</Text>
+      {item?.status === 1 ? <TouchableOpacity style={{backgroundColor:'red',padding:5,elevation:4,borderRadius:10}} onPress={()=> cancelLeave(item?.id)}>
+        <Text style={{color:colors.white}}>Cancel</Text>
       </TouchableOpacity> : ''}
     </View>
     <Text style={styles.dateHeading}>
-      {item?.leave_type === 'short'
-        ? `${startDate} ( ${startTime} - ${endTime})`
-        : `${startDate} (${item?.start_full_half === 'Full' ? 'full day' : 'half day'}) To ${endDate} (${item?.end_full_half === 'Full' ? 'full day' : 'half day'})`}
+      {item?.leave_type === 'short' ? `${startDate} ( ${startTime} - ${endTime})`
+        : item?.days === 0.5 ? `${startDate} (${item?.start_full_half === 'Full' ? 'full day' : 'half day'})` 
+        : `${startDate} (${item?.start_full_half === 'Full' ? 'full day' : 'half day'}) To ${endDate} (${item?.end_full_half === 'Full' ? 'full day' 
+        : 'half day'})`}
     </Text>
         <View style={styles.upperBlock}>
             <View>
@@ -93,7 +94,14 @@ const TaskListing = ({navigation,item}) => {
             <View style={{alignItems:'flex-end'}}>
                 <Text style={styles.sidePara}>{item?.r_head_by_Leave}</Text>
                 <Text style={styles.sidePara}>{item?.req_date}</Text>
-                <Text style={styles.sidePara}>{(item?.days && item?.days <= 1) ? `${item?.days} Day ` : (item?.days && item?.days > 1)  ? `${item?.days} Days` : (item?.hours && item?.hours <= 1 ) ? `${item?.hours} Hour` : `${item?.hours} Hours` } </Text>
+                <Text style={styles.sidePara}>
+                  {(item?.days && item?.days <= 1) ? `${item?.days} Day ` 
+                  : (item?.days && item?.days > 1) ? `${item?.days} Days` 
+                  : (item?.hours === 0 ) ? `${item?.minutes} minutes` 
+                  : (item?.minutes === 0 ) ? item?.hours === 1  ? `${item.hours} hour` :`${item?.hours} hours` 
+                  : (item?.hours && item?.hours <= 1 ) ? `${item?.hours} Hour ${item?.minutes} minutes` 
+                  : `${item?.hours} Hours ${item?.minutes} minutes` } 
+                </Text>
                 <Text style={{...styles.sidePara, fontWeight:'bold', color: item?.status ? leaveStatusColor[item?.status] : 'black'}}>{item?.status ? leaveStatus[item?.status] : ''}</Text>
             </View>
         </View>

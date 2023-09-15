@@ -12,6 +12,7 @@ import apiUrl from '../../Constants/apiUrl'
 import Loading from '../../Components/Loading'
 import colors from '../../Styles/colors'
 import { useFocusEffect } from '@react-navigation/native';
+import NotFound from '../../Components/NotFound'
 
 const LeaveScreen = ({navigation}) => {
   const { state, dispatch } = useLeaveContext(); // Get leaves from context
@@ -81,6 +82,7 @@ const LeaveScreen = ({navigation}) => {
     <Loading visible={loading} title={'Fetching Your Leaves'} />
       <HeaderComp title={'My Leaves'} rightIcon={imagePath.leaveAdd} onRightPress={()=>{navigation.navigate(navigationStrings.ADD_LEAVE)}}/>
     <View style={styles.container}>
+    {state.leaves.length > 0 ?
       <RefreshControl
             refreshing={loading}
             onRefresh={()=>{
@@ -101,6 +103,7 @@ const LeaveScreen = ({navigation}) => {
           }}
           />
         </RefreshControl>
+        : <NotFound message='No Leave Found'/>}
     </View>
     </>
   )
